@@ -1,11 +1,11 @@
 // CONSTANTS
 ////////////////
 
-const levelSize = {
+export const levelSize = {
   width: 160,
   height: 90,
 };
-const unitsPerGridCell = 5;
+export const unitsPerGridCell = 5;
 const rowGridCells = levelSize.width / unitsPerGridCell;
 const colGridCells = levelSize.height / unitsPerGridCell;
 const colors = ["black", "#6F4E37", "red", "green", "purple"];
@@ -159,5 +159,3 @@ document.onkeydown = (e) => {
     colorPen = 4;
   }
 };
-
-console.log(state.level);
