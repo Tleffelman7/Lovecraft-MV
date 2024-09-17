@@ -18,12 +18,32 @@ const state = {
   cursorPosition: { x: 0, y: 0 },
   leftClicking: false,
   rightClicking: false,
+
+  game: {
+    player: {
+      grounded: false,
+      x: 0,
+      y: 0,
+      dy: 0,
+      dx: 0,
+      width: unitsPerGridCell,
+      height: unitsPerGridCell,
+    },
+  },
 };
+
+const keysDown = new Set();
+const keysJustPressed = new Set();
+document.addEventListener("keydown", (e) => {
+  keysDown.add(e.key);
+  keysJustPressed.add(e.key);
+});
+document.addEventListener("keyup", (e) => keysDown.delete(e.key));
 
 for (let i = 0; i < rowGridCells; i++) {
   state.level.push([]);
   for (let j = 0; j < colGridCells; j++) {
-    state.level[i].push(0);
+    state.level[i].push(j === 17 ? 1 : 0);
   }
 }
 
@@ -47,12 +67,25 @@ export function gameTick(ctx) {
     }
   }
 
+  // GAME UPDATE
+  //////////////
+  const player = state.game.player;
+  handleCollision();
+  keysJustPressed.clear();
+
   // DRAW
   //////////////
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, levelSize.width, levelSize.height);
   ctx.fillStyle = "black";
   drawGrid(ctx);
+  ctx.fillStyle = "white";
+  ctx.fillRect(
+    state.game.player.x,
+    state.game.player.y,
+    state.game.player.width,
+    state.game.player.height
+  );
 }
 
 /**
@@ -159,3 +192,108 @@ document.onkeydown = (e) => {
     colorPen = 4;
   }
 };
+
+function handleCollision() {
+  const player = state.game.player;
+  // console.log(player.y);
+  const gravity = 0.2;
+
+  let newY = player.y;
+  const jumpKeys = ["w", "ArrowUp"];
+  if (jumpKeys.some((key) => keysJustPressed.has(key)) && player.grounded) {
+    player.dy = -3;
+  }
+  player.dy += gravity;
+  newY += player.dy;
+
+  // if (newY > levelSize.height - player.height) {
+  //   newY = levelSize.height - player.height;
+  //   player.dy = 0;
+  // }
+
+  //console.log(keysDown);
+  let newX = player.x;
+  const leftKeys = ["a", "ArrowLeft"];
+  if (leftKeys.some((key) => keysDown.has(key))) newX -= 1;
+  const rightKeys = ["d", "ArrowRight"];
+  if (rightKeys.some((key) => keysDown.has(key))) newX += 1;
+
+  {
+    let touchingBlock = false;
+    for (let i = 0; i < rowGridCells; i++) {
+      for (let j = 0; j < colGridCells; j++) {
+        const blockX = i * unitsPerGridCell;
+        const blockY = j * unitsPerGridCell;
+        if (
+          state.level[i][j] === 1 &&
+          playerTouchingTile(newX, player.y, blockX, blockY)
+        ) {
+          touchingBlock = true;
+
+          const dx = newX - player.x;
+          if (dx >= 0) {
+            player.x = blockX - player.width;
+          } else {
+            player.x = blockX + unitsPerGridCell;
+          }
+
+          break;
+        }
+      }
+    }
+
+    if (touchingBlock) {
+    } else {
+      player.x = newX;
+    }
+  }
+
+  {
+    // handling the Y direction
+    let touchingBlock = false;
+    for (let i = 0; i < rowGridCells; i++) {
+      for (let j = 0; j < colGridCells; j++) {
+        const blockX = i * unitsPerGridCell;
+        const blockY = j * unitsPerGridCell;
+        if (
+          state.level[i][j] === 1 &&
+          playerTouchingTile(player.x, newY, blockX, blockY)
+        ) {
+          touchingBlock = true;
+
+          if (player.dy >= 0) {
+            player.y = blockY - player.height;
+            player.grounded = true;
+          } else {
+            player.y = blockY + unitsPerGridCell;
+          }
+
+          break;
+        }
+      }
+    }
+
+    player.grounded = false;
+    if (!touchingBlock) {
+      player.y = newY;
+    } else {
+      if (player.dy > 0) {
+        player.dy = 0;
+        player.grounded = true;
+      } else {
+        player.dy = 0;
+      }
+    }
+  }
+
+  return false;
+}
+
+function playerTouchingTile(px, py, tileX, tileY) {
+  return (
+    px < tileX + unitsPerGridCell &&
+    px + state.game.player.width > tileX &&
+    py < tileY + unitsPerGridCell &&
+    py + state.game.player.height > tileY
+  );
+}
