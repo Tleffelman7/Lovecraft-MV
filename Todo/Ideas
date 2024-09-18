@@ -26,6 +26,10 @@ Lead up have a janitor be cleaning graphifti off a wall to show cause/effect
         Sewers-
             Shoggoths
             Maze Level
+                Random Level gen, that fixes itself before the final room.
+                    Every door you go through leads to a different door not in maze order or a dead end
+                    Leave hints about getting lost
+                    leave completed map at room before boss, that fixes their map to be in the right order
             Boss-
                 Anger big shoggoth have to escape out of the sewer maze-auto save point before area
 
