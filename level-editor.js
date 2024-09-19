@@ -195,95 +195,68 @@ document.onkeydown = (e) => {
 
 function handleCollision() {
   const player = state.game.player;
-  // console.log(player.y);
   const gravity = 0.2;
 
-  let newY = player.y;
+  let targetY = player.y;
   const jumpKeys = ["w", "ArrowUp"];
   if (jumpKeys.some((key) => keysJustPressed.has(key)) && player.grounded) {
     player.dy = -3;
   }
   player.dy += gravity;
-  newY += player.dy;
+  targetY += player.dy;
 
-  // if (newY > levelSize.height - player.height) {
-  //   newY = levelSize.height - player.height;
-  //   player.dy = 0;
-  // }
-
-  //console.log(keysDown);
-  let newX = player.x;
+  let targetX = player.x;
   const leftKeys = ["a", "ArrowLeft"];
-  if (leftKeys.some((key) => keysDown.has(key))) newX -= 1;
+  if (leftKeys.some((key) => keysDown.has(key))) targetX -= 1;
   const rightKeys = ["d", "ArrowRight"];
-  if (rightKeys.some((key) => keysDown.has(key))) newX += 1;
+  if (rightKeys.some((key) => keysDown.has(key))) targetX += 1;
 
-  {
-    let touchingBlock = false;
+  (() => { // x collision resolution
     for (let i = 0; i < rowGridCells; i++) {
       for (let j = 0; j < colGridCells; j++) {
         const blockX = i * unitsPerGridCell;
         const blockY = j * unitsPerGridCell;
         if (
           state.level[i][j] === 1 &&
-          playerTouchingTile(newX, player.y, blockX, blockY)
+          playerTouchingTile(targetX, player.y, blockX, blockY)
         ) {
-          touchingBlock = true;
-
-          const dx = newX - player.x;
+          const dx = targetX - player.x;
           if (dx >= 0) {
             player.x = blockX - player.width;
           } else {
             player.x = blockX + unitsPerGridCell;
           }
-
-          break;
+          return;
         }
       }
     }
+    player.x = targetX;
+  })()
 
-    if (touchingBlock) {
-    } else {
-      player.x = newX;
-    }
-  }
-
-  {
-    // handling the Y direction
-    let touchingBlock = false;
-    for (let i = 0; i < rowGridCells; i++) {
-      for (let j = 0; j < colGridCells; j++) {
-        const blockX = i * unitsPerGridCell;
-        const blockY = j * unitsPerGridCell;
-        if (
-          state.level[i][j] === 1 &&
-          playerTouchingTile(player.x, newY, blockX, blockY)
-        ) {
-          touchingBlock = true;
-
-          if (player.dy >= 0) {
-            player.y = blockY - player.height;
-            player.grounded = true;
-          } else {
-            player.y = blockY + unitsPerGridCell;
+  player.grounded = false;
+  { // y collision resolution
+    (() => {
+      for (let i = 0; i < rowGridCells; i++) {
+        for (let j = 0; j < colGridCells; j++) {
+          const blockX = i * unitsPerGridCell;
+          const blockY = j * unitsPerGridCell;
+          if (
+            state.level[i][j] === 1 &&
+            playerTouchingTile(player.x, targetY, blockX, blockY)
+          ) {
+            if (player.dy >= 0) {
+              player.y = blockY - player.height;
+              player.grounded = true;
+            } else {
+              player.y = blockY + unitsPerGridCell;
+            }
+            player.dy = 0;
+            return
           }
-
-          break;
         }
       }
-    }
-
-    player.grounded = false;
-    if (!touchingBlock) {
-      player.y = newY;
-    } else {
-      if (player.dy > 0) {
-        player.dy = 0;
-        player.grounded = true;
-      } else {
-        player.dy = 0;
-      }
-    }
+      player.y = targetY;
+    })()
   }
 
   return false;
