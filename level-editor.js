@@ -28,6 +28,8 @@ const state = {
       dx: 0,
       width: unitsPerGridCell,
       height: unitsPerGridCell,
+      health: 3,
+      sanity: 3,
     },
   },
 };
