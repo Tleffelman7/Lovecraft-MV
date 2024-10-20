@@ -252,6 +252,8 @@ if(healthCheat.some((key)=>keysJustPressed.has(key))){
   player.health+=1
 }
   let targetY = player.y;
+
+ 
   const jumpKeys = ["w", "ArrowUp"];
   
   if (player.health>0&&jumpKeys.some((key) => keysJustPressed.has(key)) && player.grounded) {
@@ -259,6 +261,24 @@ if(healthCheat.some((key)=>keysJustPressed.has(key))){
   }
   player.dy += gravity;
   targetY += player.dy;
+
+player.x+=player.dx
+if (Math.sign(player.dx) === -1) {
+  player.dx += 0.5;
+
+  if (player.dx >= 0) {
+    player.dx = 0;
+  }
+}
+
+if (Math.sign(player.dx) === 1) {
+  player.dx -= 0.5;
+
+  if (player.dx <= 0) {
+    player.dx = 0;
+  }
+}
+
 
   let targetX = player.x;
   if(player.health>0){
@@ -302,9 +322,10 @@ if (arrowAttackKey.some((key)=>keysJustPressed.has(key)&&playerFacing===false))
           player.health-=1
         }
           timeSinceEnemyContact=0
-
+        if (playerFacing===true){player.dx=-2.5}else {player.dx=2.5}
+        
         }
-
+        
         //Left Attack
         if (
           state.level[i][j]===2 &&
