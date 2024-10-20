@@ -104,6 +104,7 @@ export function gameTick(ctx) {
     state.game.player.width,
     state.game.player.height
   );
+  //test
   for (let i=0;i<player.health;i++){
   
     ctx.fillStyle="red",
@@ -242,13 +243,15 @@ if(healthCheat.some((key)=>keysJustPressed.has(key))){
 }
   let targetY = player.y;
   const jumpKeys = ["w", "ArrowUp"];
-  if (jumpKeys.some((key) => keysJustPressed.has(key)) && player.grounded) {
+  
+  if (player.health>0&&jumpKeys.some((key) => keysJustPressed.has(key)) && player.grounded) {
     player.dy = -3;
   }
   player.dy += gravity;
   targetY += player.dy;
 
   let targetX = player.x;
+  if(player.health>0){
   const leftKeys = ["a", "ArrowLeft"];
   if (leftKeys.some((key) => keysDown.has(key))) {targetX -= 1; playerFacing=false}
   const rightKeys = ["d", "ArrowRight"];
@@ -258,6 +261,7 @@ if (attackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===true)){
 timeSinceLeftAttack=0
 } else if (attackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===false))
   {timeSinceRightAttack=0}
+}
 
   (() => { // x collision resolution
     for (let i = 0; i < rowGridCells; i++) {
@@ -282,7 +286,9 @@ timeSinceLeftAttack=0
           playerTouchingTile(targetX,player.y,blockX,blockY)&&
           timeSinceEnemyContact>invincibilityFrame
         ){
+          if(player.health===0){}else{
           player.health-=1
+        }
           timeSinceEnemyContact=0
         }
       }
