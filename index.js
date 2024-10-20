@@ -1,5 +1,5 @@
 ///@ts-check
-import { gameTick, levelSize, unitsPerGridCell } from "./level-editor.js";
+import { gameTick, levelSize, unitsPerGridCell, } from "./level-editor.js";
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 

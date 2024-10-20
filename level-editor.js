@@ -35,6 +35,10 @@ const state = {
       health: 3,
       sanity: 3,
     },
+    weapon:{
+      width:7.5,
+      height:unitsPerGridCell,
+    }
   },
 };
 const invincibilityFrame=.35
@@ -93,6 +97,7 @@ export function gameTick(ctx) {
 
   // DRAW
   //////////////
+  
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, levelSize.width, levelSize.height);
   ctx.fillStyle = "black";
@@ -112,11 +117,12 @@ export function gameTick(ctx) {
   }
 if(timeSinceLeftAttack<attackTime){
   ctx.fillStyle="green",
-  ctx.fillRect((state.game.player.x+state.game.player.width),state.game.player.y,5,5)
+  ctx.fillRect((player.x+player.width),player.y,7.5,5)
 }
 if(timeSinceRightAttack<attackTime){
   ctx.fillStyle="green",
-  ctx.fillRect((state.game.player.x-state.game.player.width),state.game.player.y,5,5)
+  //7.5 is weapon width
+  ctx.fillRect((player.x-7.5),player.y,7.5,5)
 }
   timeSinceLeftAttack+=dt
     timeSinceRightAttack+=dt
@@ -291,13 +297,33 @@ timeSinceLeftAttack=0
         }
           timeSinceEnemyContact=0
         }
+
+        //Left Attack
+        if (
+          state.level[i][j]===2 &&
+          weaponLeftTouchingTile(player.x,player.y,blockX,blockY)&&
+          (timeSinceLeftAttack<attackTime)
+        ){
+
+        }
+        // Right Attack
+        if (
+          state.level[i][j]===2 &&
+          weaponRightTouchingTile(targetX,player.y,blockX,blockY)&&
+          (timeSinceRightAttack<attackTime)
+        ){
+
+        }
+        console.log (weaponLeftTouchingTile(player.x,player.y,blockX,blockY))
       }
+      
     }
     timeSinceEnemyContact+=dt
     
     player.x = targetX;
   })()
 
+  
   
   player.grounded = false;
   { // y collision resolution
@@ -334,5 +360,22 @@ function playerTouchingTile(px, py, tileX, tileY) {
     px + state.game.player.width > tileX &&
     py < tileY + unitsPerGridCell &&
     py + state.game.player.height > tileY
+  );
+}
+
+function weaponLeftTouchingTile(wx, wy, tileX, tileY) {
+  return (
+    wx + state.game.player.width< tileX + unitsPerGridCell &&
+    wx +7.5 > tileX &&
+    wy < tileY + unitsPerGridCell &&
+    wy + state.game.player.height > tileY
+  );
+}
+function weaponRightTouchingTile(wx, wy, tileX, tileY) {
+  return (
+    wx < tileX + unitsPerGridCell &&
+    wx -7.5 > tileX &&
+    wy < tileY + unitsPerGridCell &&
+    wy + state.game.player.height > tileY
   );
 }
