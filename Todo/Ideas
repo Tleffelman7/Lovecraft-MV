@@ -1,30 +1,40 @@
+Player-
+    Random Professor, 
+        Let players input a name as an introduction to class, have students act confuse since it's not their professor's name (easter egg for real name with no reaction from students with multiple choice lecture material to really drive home this is our normal teacher)
+    Health
+        Go to a hospital upon physical "death" (Maybe implement money?)
+    Sanity
+        Go to an asylum upon mental insanity (Maybe money)
+    (Maybe implement Soul/spirit, probably more of a hidden value to affect endings/personal reaction to how monsterous you become)
+
+
 Places of Interest
 Mass.
 Arkham
 Miskatonic
-Base
-library
-Theatre
-Hastur
-actors
-painting of yellow sign-final boss
-have to cover it up/clean it up, while actors are throwing themselves at you
-Lead up have a janitor be cleaning graphifti off a wall to show cause/effect
+    Base
+    library
+    Theatre
+        Hastur
+            actors
+            painting of yellow sign-final boss
+            have to cover it up/clean it up, while actors are throwing themselves at you
+            Lead up have a janitor be cleaning graphifti off a wall to show cause/effect
 
                 Background Images-Box seat platforms, levels as you go get closer to the stage
                     and play starts getting stranger and more violent the closer you get
 
 
-        Dunwich???
+    Dunwich???
 
-        Innsmouth
-            Dagon
+    Innsmouth
+        Dagon
             cultist wielding fish
-        Upstate/foresty area
-            Mi-Go
-            brain jar
-        Sewers-
-            Shoggoths
+    Upstate/foresty area
+        Mi-Go
+        brain jar
+    Sewers-
+        Shoggoths
             Maze Level
                 Random Level gen, that fixes itself before the final room.
                     Every door you go through leads to a different door not in maze order or a dead end
@@ -38,22 +48,24 @@ Powers-
 Base
 Jump
 Move
-Hit with book
+Hit with book--main attack (very funny) heavy necronomicon
 Chant/banish
 Innsmouth
 Gills-fishmen
-/Water Dispersal-book spell
+/Water Dispersal-book spell--might remove this option
 Upstate
-Powerful jump and Glide-Mi go wings
+Powerful jump and Glide-Mi go wings (No double jumping hold button to jump higher)
 Theatre
-Mind Control-"Yith like"
+Mind Control-"Yith like"--- Instead Make humans enemies run away insane?
 Dunwich
 Long Range attack-Tent
 Sewers
-Shoggoth Tentacle Dask
+Shoggoth Tentacle Dash
 "Can even grab the air to propel you forward"
 
-Secrets-
+I like the idea of a teleport with pages of your book weapon fluttering around you 
+
+Secrets/collectibles-
 Have pages of different lovecraftian books lying around to collect-reward in some way
 Theatre- pages to the king in yellow
 upstate- book of eibon
@@ -62,7 +74,7 @@ dunwich-Cultes des Goules
 Sewer shoggoth level-De vermis mysteriis
 add Pnakotic Manuscripts
 
-A week in the life person-7 days
+--A week in the life person-7 days-- Probably won't do
 freedom ending to do whatever in the world solve the real mystery-free roam
 Secret Ending-of person in yith land-once all secrets have been collected
 
