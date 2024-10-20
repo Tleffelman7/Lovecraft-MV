@@ -103,12 +103,16 @@ export function gameTick(ctx) {
   ctx.fillStyle = "black";
   drawGrid(ctx);
   ctx.fillStyle = "white";
+  if (timeSinceEnemyContact<invincibilityFrame){
+    ctx.globalAlpha=.5
+  }
   ctx.fillRect(
     state.game.player.x,
     state.game.player.y,
     state.game.player.width,
     state.game.player.height
   );
+  ctx.globalAlpha=1
   //test
   for (let i=0;i<player.health;i++){
   
@@ -298,6 +302,7 @@ if (arrowAttackKey.some((key)=>keysJustPressed.has(key)&&playerFacing===false))
           player.health-=1
         }
           timeSinceEnemyContact=0
+
         }
 
         //Left Attack
