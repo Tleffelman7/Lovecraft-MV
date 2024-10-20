@@ -258,16 +258,18 @@ if(healthCheat.some((key)=>keysJustPressed.has(key))){
 
   let targetX = player.x;
   if(player.health>0){
-  const leftKeys = ["a", "ArrowLeft"];
+  const leftKeys = ["a"];
   if (leftKeys.some((key) => keysDown.has(key))) {targetX -= 1; playerFacing=false}
-  const rightKeys = ["d", "ArrowRight"];
+  const rightKeys = [ "ArrowRight"];
   if (rightKeys.some((key) => keysDown.has(key))) {targetX += 1;playerFacing=true}
-const attackKeys=["Spacebar"," "]
-if (attackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===true)){
+const wasdAttackKeys=["d"]
+if (wasdAttackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===true)){
 timeSinceLeftAttack=0
-} else if (attackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===false))
+} 
+const arrowAttackKey=["ArrowLeft"]
+if (arrowAttackKey.some((key)=>keysJustPressed.has(key)&&playerFacing===false))
   {timeSinceRightAttack=0}
-}
+  }
 
   (() => { // x collision resolution
     for (let i = 0; i < rowGridCells; i++) {
@@ -304,17 +306,25 @@ timeSinceLeftAttack=0
           weaponLeftTouchingTile(player.x,player.y,blockX,blockY)&&
           (timeSinceLeftAttack<attackTime)
         ){
-
+          state.level[i][j]=0
         }
         // Right Attack
         if (
           state.level[i][j]===2 &&
-          weaponRightTouchingTile(targetX,player.y,blockX,blockY)&&
+          weaponRightTouchingTile(player.x,player.y,blockX,blockY)&&
           (timeSinceRightAttack<attackTime)
         ){
-
+          state.level[i][j]=0
         }
-        console.log (weaponLeftTouchingTile(player.x,player.y,blockX,blockY))
+        if (
+          state.level[i][j]===3&&
+          playerTouchingTile(targetX,player.y,blockX,blockY)
+        ){
+          player.health+=1
+          state.level[i][j]=0
+        }
+
+
       }
       
     }
@@ -366,15 +376,15 @@ function playerTouchingTile(px, py, tileX, tileY) {
 function weaponLeftTouchingTile(wx, wy, tileX, tileY) {
   return (
     wx + state.game.player.width< tileX + unitsPerGridCell &&
-    wx +7.5 > tileX &&
+    wx +7.5+unitsPerGridCell > tileX &&
     wy < tileY + unitsPerGridCell &&
     wy + state.game.player.height > tileY
   );
 }
 function weaponRightTouchingTile(wx, wy, tileX, tileY) {
   return (
-    wx < tileX + unitsPerGridCell &&
-    wx -7.5 > tileX &&
+    wx > tileX + unitsPerGridCell &&
+    wx -7.5-unitsPerGridCell < tileX &&
     wy < tileY + unitsPerGridCell &&
     wy + state.game.player.height > tileY
   );
