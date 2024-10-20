@@ -11,6 +11,10 @@ const colGridCells = levelSize.height / unitsPerGridCell;
 const colors = ["black", "#6F4E37", "red", "green", "purple"];
 let colorPen = 0;
 
+//Fight Const
+//////
+//true=right, false=left
+let playerFacing=true
 // LEVEL EDITOR STATE
 ////////////////
 const state = {
@@ -33,8 +37,11 @@ const state = {
     },
   },
 };
-const invincibilityFrame=.5
+const invincibilityFrame=.35
 let timeSinceEnemyContact=invincibilityFrame
+const attackTime=100
+let timeSinceRightAttack=attackTime
+let timeSinceLeftAttack=attackTime
 
 const keysDown = new Set();
 const keysJustPressed = new Set();
@@ -97,6 +104,21 @@ export function gameTick(ctx) {
     state.game.player.width,
     state.game.player.height
   );
+  for (let i=0;i<player.health;i++){
+  
+    ctx.fillStyle="red",
+    ctx.fillRect(i*10,10,5,5)
+  }
+if(timeSinceLeftAttack<attackTime){
+  ctx.fillStyle="green",
+  ctx.fillRect((state.game.player.x+state.game.player.width),state.game.player.y,5,5)
+}
+if(timeSinceRightAttack<attackTime){
+  ctx.fillStyle="green",
+  ctx.fillRect((state.game.player.x-state.game.player.width),state.game.player.y,5,5)
+}
+  timeSinceLeftAttack+=dt
+    timeSinceRightAttack+=dt
 }
 
 /**
@@ -214,7 +236,10 @@ function handleCollision() {
   
   const player = state.game.player;
   const gravity = 0.2;
-
+const healthCheat=["h"]
+if(healthCheat.some((key)=>keysJustPressed.has(key))){
+  player.health+=1
+}
   let targetY = player.y;
   const jumpKeys = ["w", "ArrowUp"];
   if (jumpKeys.some((key) => keysJustPressed.has(key)) && player.grounded) {
@@ -225,9 +250,14 @@ function handleCollision() {
 
   let targetX = player.x;
   const leftKeys = ["a", "ArrowLeft"];
-  if (leftKeys.some((key) => keysDown.has(key))) targetX -= 1;
+  if (leftKeys.some((key) => keysDown.has(key))) {targetX -= 1; playerFacing=false}
   const rightKeys = ["d", "ArrowRight"];
-  if (rightKeys.some((key) => keysDown.has(key))) targetX += 1;
+  if (rightKeys.some((key) => keysDown.has(key))) {targetX += 1;playerFacing=true}
+const attackKeys=["Spacebar"," "]
+if (attackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===true)){
+timeSinceLeftAttack=0
+} else if (attackKeys.some((key)=>keysJustPressed.has(key)&&playerFacing===false))
+  {timeSinceRightAttack=0}
 
   (() => { // x collision resolution
     for (let i = 0; i < rowGridCells; i++) {
@@ -258,6 +288,7 @@ function handleCollision() {
       }
     }
     timeSinceEnemyContact+=dt
+    
     player.x = targetX;
   })()
 
