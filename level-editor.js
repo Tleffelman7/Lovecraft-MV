@@ -33,6 +33,8 @@ const state = {
     },
   },
 };
+const invincibilityFrame=.5
+let timeSinceEnemyContact=invincibilityFrame
 
 const keysDown = new Set();
 const keysJustPressed = new Set();
@@ -48,15 +50,22 @@ for (let i = 0; i < rowGridCells; i++) {
     state.level[i].push(j === 17 ? 1 : 0);
   }
 }
-
+let prevTime=performance.now()
 const rowSize = 4;
 
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
+
+
 export function gameTick(ctx) {
   // UPDATE
   //////////////
+
+  const now=performance.now()
+  const dt=now-prevTime
+  prevTime=now
+
   const x = Math.floor(state.cursorPosition.x / unitsPerGridCell);
   const y = Math.floor(state.cursorPosition.y / unitsPerGridCell);
   const inBounds = x >= 0 && x < rowGridCells && y >= 0 && y < colGridCells;
@@ -93,7 +102,10 @@ export function gameTick(ctx) {
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
+
 function drawGrid(ctx) {
+ 
+  prevTime=performance.now()
   for (let i = 0; i < rowGridCells; i++) {
     for (let j = 0; j < colGridCells; j++) {
       ctx.fillStyle = colors[state.level[i][j]];
@@ -196,6 +208,10 @@ document.onkeydown = (e) => {
 };
 
 function handleCollision() {
+  const now=performance.now()
+  const dt=now-prevTime
+  prevTime=now
+  
   const player = state.game.player;
   const gravity = 0.2;
 
@@ -230,11 +246,22 @@ function handleCollision() {
           }
           return;
         }
+
+        if (
+          state.level[i][j]===2 &&
+          playerTouchingTile(targetX,player.y,blockX,blockY)&&
+          timeSinceEnemyContact>invincibilityFrame
+        ){
+          player.health-=1
+          timeSinceEnemyContact=0
+        }
       }
     }
+    timeSinceEnemyContact+=dt
     player.x = targetX;
   })()
 
+  
   player.grounded = false;
   { // y collision resolution
     (() => {
