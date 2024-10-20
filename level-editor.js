@@ -301,20 +301,20 @@ timeSinceLeftAttack=0
         //Left Attack
         if (
           state.level[i][j]===2 &&
-          weaponLeftTouchingTile(player.x,player.y,blockX,blockY)&&
-          (timeSinceLeftAttack<attackTime)
+          weaponLeftTouchingTile(player.x,player.y,blockX,blockY)//&&
+          //(timeSinceLeftAttack<attackTime)
         ){
-
+          console.log (true)
         }
         // Right Attack
         if (
           state.level[i][j]===2 &&
-          weaponRightTouchingTile(targetX,player.y,blockX,blockY)&&
-          (timeSinceRightAttack<attackTime)
+          weaponRightTouchingTile(player.X,player.y,blockX,blockY)//&&
+          //(timeSinceRightAttack<attackTime)
         ){
-
+         
         }
-        console.log (weaponLeftTouchingTile(player.x,player.y,blockX,blockY))
+       
       }
       
     }
@@ -363,19 +363,21 @@ function playerTouchingTile(px, py, tileX, tileY) {
   );
 }
 
-function weaponLeftTouchingTile(wx, wy, tileX, tileY) {
-  return (
-    wx + state.game.player.width< tileX + unitsPerGridCell &&
-    wx +7.5 > tileX &&
-    wy < tileY + unitsPerGridCell &&
-    wy + state.game.player.height > tileY
-  );
-}
 function weaponRightTouchingTile(wx, wy, tileX, tileY) {
   return (
-    wx < tileX + unitsPerGridCell &&
-    wx -7.5 > tileX &&
+    wx + state.game.player.width< tileX + unitsPerGridCell &&
+    wx+state.game.player.width +7.5 > tileX &&
     wy < tileY + unitsPerGridCell &&
     wy + state.game.player.height > tileY
   );
 }
+function weaponLeftTouchingTile(wx, wy, tileX, tileY) {
+  return (
+    wx < tileX + unitsPerGridCell &&
+    wx-7.5 > tileX &&
+    wy < tileY + unitsPerGridCell &&
+    wy + state.game.player.height > tileY
+  );
+}
+
+
